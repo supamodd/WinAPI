@@ -16,7 +16,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
     wClass.cbWndExtra = 0;
     wClass.cbClsExtra = 0;
 
-   
     wClass.hIconSm = (HICON)LoadImage(hInstance, L"window2win.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
     wClass.hIcon = (HICON)LoadImage(hInstance, L"desktop2win.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
     wClass.hCursor = (HCURSOR)LoadImage(hInstance, L"Working In Background.ani", IMAGE_CURSOR, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
