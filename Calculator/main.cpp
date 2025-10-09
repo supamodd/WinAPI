@@ -1,6 +1,7 @@
 ﻿#include<Windows.h>
 #include"resource.h"
 
+
 CONST CHAR g_sz_CLASS_NAME[] = "Calc_SPU_411";
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
