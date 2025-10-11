@@ -1,8 +1,8 @@
 ﻿#include <Windows.h>
 #include "resource.h"
-#include <wchar.h>
+#include <stdio.h> 
 
-CONST WCHAR g_sz_WND_CLASS_NAME[] = L"My Windows Class"; 
+CONST CHAR g_sz_WND_CLASS_NAME[] = "My Windows Class";
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -16,9 +16,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
     wClass.cbWndExtra = 0;
     wClass.cbClsExtra = 0;
 
-    wClass.hIconSm = (HICON)LoadImage(hInstance, L"window2win.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
-    wClass.hIcon = (HICON)LoadImage(hInstance, L"desktop2win.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
-    wClass.hCursor = (HCURSOR)LoadImage(hInstance, L"Working In Background.ani", IMAGE_CURSOR, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
+    wClass.hIconSm = (HICON)LoadImage(hInstance, "window2win.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
+    wClass.hIcon = (HICON)LoadImage(hInstance, "desktop2win.ico", IMAGE_ICON, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
+    wClass.hCursor = (HCURSOR)LoadImage(hInstance, "Working In Background.ani", IMAGE_CURSOR, LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_LOADFROMFILE);
     wClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
 
     wClass.hInstance = hInstance;
@@ -28,31 +28,27 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 
     if (!RegisterClassEx(&wClass))
     {
-        MessageBox(NULL, L"Class registration failed", L"Error", MB_OK | MB_ICONERROR);
+        MessageBox(NULL, "Class registration failed", "Error", MB_OK | MB_ICONERROR);
         return 0;
     }
 
-    
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    // размер окна
     int windowWidth = (screenWidth * 75) / 100;
     int windowHeight = (screenHeight * 75) / 100;
 
-    // расположение экранаа
     int posX = (screenWidth - windowWidth) / 2;
     int posY = (screenHeight - windowHeight) / 2;
 
-    
     HWND hwnd = CreateWindowEx
     (
-        NULL, 
-        g_sz_WND_CLASS_NAME, 
-        g_sz_WND_CLASS_NAME, 
+        NULL,
+        g_sz_WND_CLASS_NAME,
+        g_sz_WND_CLASS_NAME,
         WS_OVERLAPPEDWINDOW,
-        posX, posY, 
-        windowWidth, windowHeight, 
+        posX, posY,
+        windowWidth, windowHeight,
         NULL,
         NULL,
         hInstance,
@@ -60,13 +56,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
     );
     if (hwnd == NULL)
     {
-        MessageBox(NULL, L"Window creation failed", L"Error", MB_OK | MB_ICONERROR); 
+        MessageBox(NULL, "Window creation failed", "Error", MB_OK | MB_ICONERROR);
         return 0;
     }
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
-   
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0) > 0)
     {
@@ -86,8 +81,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HWND hStatic = CreateWindowEx
         (
             NULL,
-            L"Static", 
-            L"Text created with CreateWindowEx();", 
+            "Static",
+            "Text created with CreateWindowEx();",
             WS_CHILD | WS_VISIBLE,
             10, 10,
             500, 25,
@@ -100,8 +95,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HWND hEdit = CreateWindowEx
         (
             NULL,
-            L"Edit",
-            L"", 
+            "Edit",
+            "",
             WS_CHILD | WS_VISIBLE | WS_BORDER,
             10, 45,
             500, 22,
@@ -114,8 +109,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HWND hButton = CreateWindowEx
         (
             NULL,
-            L"Button", 
-            L"Click me", 
+            "Button",
+            "Click me",
             WS_CHILD | WS_VISIBLE,
             430, 70,
             80, 32,
@@ -129,17 +124,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_SIZE:
     {
-       
         RECT rect;
         GetWindowRect(hwnd, &rect);
 
-        
-        wchar_t buffer[100];
-        swprintf(buffer, 100, L"Width: %d, Height: %d, X: %d, Y: %d",
+        char buffer[100];
+        sprintf_s(buffer, sizeof(buffer), "Width: %d, Height: %d, X: %d, Y: %d",
             rect.right - rect.left, rect.bottom - rect.top,
             rect.left, rect.top);
 
-       
         SetWindowText(hwnd, buffer);
     }
     break;
@@ -149,7 +141,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
         case 1002:
         {
-            MessageBox(hwnd, L"Button clicked", L"Information", MB_OK | MB_ICONINFORMATION); 
+            MessageBox(hwnd, "Button clicked", "Information", MB_OK | MB_ICONINFORMATION);
             CONST INT SIZE = 256;
             CHAR sz_buffer[SIZE] = {};
             HWND hStatic = GetDlgItem(hwnd, 1000);
@@ -165,12 +157,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_DESTROY:
-        MessageBox(NULL, L"Application finished", L"Finita la comedia", MB_OK | MB_ICONERROR); 
+        MessageBox(NULL, "Application finished", "Finita la comedia", MB_OK | MB_ICONERROR);
         PostQuitMessage(0);
         break;
 
     case WM_CLOSE:
-        if (MessageBox(hwnd, L"Are you sure you want to close?", L"Exit", MB_YESNO | MB_ICONQUESTION) == IDYES) 
+        if (MessageBox(hwnd, "Are you sure you want to close?", "Exit", MB_YESNO | MB_ICONQUESTION) == IDYES)
             SendMessage(hwnd, WM_DESTROY, 0, 0);
         break;
 
