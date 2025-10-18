@@ -7,9 +7,9 @@
 CONST CHAR g_sz_CLASS_NAME[] = "Calc_SPU_411";
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-// Прототипы функций
 void UpdateDisplay(HWND hwndDisplay, const std::string& value);
 void ProcessButtonClick(HWND hwndDisplay, WPARAM wParam);
+double EvaluateExpression(const std::string& expression);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -59,7 +59,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
-    // 3) Запуск цикла сообщений:
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0))
     {
@@ -79,13 +78,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         hwndDisplay = CreateWindowEx(0, "EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT | ES_READONLY,
             10, 10, 260, 30, hwnd, (HMENU)IDC_EDIT_DISPLAY, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
 
-        // Кнопки калькулятора
         CreateWindow("BUTTON", "7", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 10, 50, 60, 40, hwnd, (HMENU)IDC_BUTTON_7, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
         CreateWindow("BUTTON", "8", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 80, 50, 60, 40, hwnd, (HMENU)IDC_BUTTON_8, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
         CreateWindow("BUTTON", "9", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 150, 50, 60, 40, hwnd, (HMENU)IDC_BUTTON_9, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
         CreateWindow("BUTTON", "/", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 220, 50, 60, 40, hwnd, (HMENU)IDC_BUTTON_SLASH, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
 
-        // Остальные кнопки
         CreateWindow("BUTTON", "4", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 10, 100, 60, 40, hwnd, (HMENU)IDC_BUTTON_4, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
         CreateWindow("BUTTON", "5", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 80, 100, 60, 40, hwnd, (HMENU)IDC_BUTTON_5, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
         CreateWindow("BUTTON", "6", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 150, 100, 60, 40, hwnd, (HMENU)IDC_BUTTON_6, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
@@ -134,10 +131,7 @@ void UpdateDisplay(HWND hwndDisplay, const std::string& value)
 
 void ProcessButtonClick(HWND hwndDisplay, WPARAM wParam)
 {
-    static std::string currentValue = "";                   // Текущее значение, которое выводится
-    static std::string currentOperation = "";           // Операция
-    static double result = 0.0;                                  // Результат вычислений
-    static bool operationPressed = false;
+    static std::string currentValue = ""; 
 
     try {
         switch (LOWORD(wParam))
@@ -154,46 +148,15 @@ void ProcessButtonClick(HWND hwndDisplay, WPARAM wParam)
         case IDC_BUTTON_9: currentValue += "9"; break;
         case IDC_BUTTON_POINT: currentValue += "."; break;
         case IDC_BUTTON_PLUS:
-            if (!operationPressed) {
-                result = std::stod(currentValue);
-                currentValue = "";
-                currentOperation = "+";
-                operationPressed = true;
-            }
-            break;
+            currentValue += "+"; break;
         case IDC_BUTTON_MINUS:
-            if (!operationPressed)
-            {
-                result = std::stod(currentValue);
-                currentValue = "";
-                currentOperation = "-";
-                operationPressed = true;
-            }
-            break;
+            currentValue += "-"; break;
         case IDC_BUTTON_SLASH:
-            if (!operationPressed)
-            {
-                result = std::stod(currentValue);
-                currentValue = "";
-                currentOperation = "/";
-                operationPressed = true;
-            }
-            break;
+            currentValue += "/"; break;
         case IDC_BUTTON_ASTER:
-            if (!operationPressed) 
-            {
-                result = std::stod(currentValue);
-                currentValue = "";
-                currentOperation = "*";
-                operationPressed = true;
-            }
-            break;
+            currentValue += "*"; break;
         case IDC_BUTTON_CLR:
-            currentValue = "";
-            result = 0;
-            currentOperation = "";
-            operationPressed = false;
-            break;
+            currentValue = ""; break;
         case IDC_BUTTON_BSP:
             if (!currentValue.empty())
             {
@@ -201,30 +164,8 @@ void ProcessButtonClick(HWND hwndDisplay, WPARAM wParam)
             }
             break;
         case IDC_BUTTON_EQUAL:
-            if (currentOperation == "+")
-            {
-                result += std::stod(currentValue);
-            }
-            else if (currentOperation == "-") 
-            {
-                result -= std::stod(currentValue);
-            }
-            else if (currentOperation == "*")
-            {
-                result *= std::stod(currentValue);
-            }
-            else if (currentOperation == "/")
-            {
-                if (currentValue == "0")
-                {
-                    currentValue = "Error";
-                    UpdateDisplay(hwndDisplay, currentValue);
-                    return;
-                }
-                result /= std::stod(currentValue);
-            }
+            double result = EvaluateExpression(currentValue);
             currentValue = std::to_string(result);
-            operationPressed = false;
             break;
         }
 
@@ -232,7 +173,32 @@ void ProcessButtonClick(HWND hwndDisplay, WPARAM wParam)
     }
     catch (...)
     {
-        currentValue = "Error"; 
+        currentValue = "Error";
         UpdateDisplay(hwndDisplay, currentValue);
     }
+}
+
+
+double EvaluateExpression(const std::string& expression)
+{
+    std::istringstream iss(expression);
+    double result = 0.0;
+    char op = '+';
+    double num;
+
+    while (iss >> num)
+    {
+        if (op == '+')
+            result += num;
+        else if (op == '-')
+            result -= num;
+        else if (op == '*')
+            result *= num;
+        else if (op == '/')
+            result /= num;
+
+        iss >> op;
+    }
+
+    return result;
 }
