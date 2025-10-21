@@ -373,7 +373,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"0");
         }
 
-        // Обработка знаков операций (+, -, *, /)
+        // Обработка знаков операций
         if (LOWORD(wParam) >= IDC_BUTTON_PLUS && LOWORD(wParam) <= IDC_BUTTON_SLASH)
         {
             if (input)
@@ -399,12 +399,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             input_operation = TRUE;
         }
 
-        // Обработка знака "="
         if (LOWORD(wParam) == IDC_BUTTON_EQUAL)
         {
             if (input) b = atof(sz_display);
 
-            // Выполняем операцию с последним числом
             switch (operation)
             {
             case IDC_BUTTON_PLUS: result += current_num; break;
@@ -421,7 +419,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             input_operation = FALSE;
             input = FALSE;
 
-            // Округляем результат до 6 знаков после запятой
             if (result == (int)result)
                 sprintf(sz_display, "%d", (int)result);
             else
