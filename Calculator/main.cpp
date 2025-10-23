@@ -37,8 +37,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR plCmdLine, IN
     wClass.cbWndExtra = 0;
     wClass.cbClsExtra = 0;
 
-    wClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));
-    wClass.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));
+    wClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON22));
+    wClass.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON22));
     wClass.hCursor = LoadCursor(NULL, IDC_ARROW);
     wClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
 
@@ -110,17 +110,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             NULL
         );
 
+        // Массив идентификаторов ресурсов для цифр
+        const int digitBitmapIds[] = { IDI_IMAGE_0, IDI_IMAGE_1, IDI_IMAGE_2, IDI_IMAGE_3, IDI_IMAGE_4,
+                                       IDI_IMAGE_5, IDI_IMAGE_6, IDI_IMAGE_7, IDI_IMAGE_8, IDI_IMAGE_9 };
+
         INT digit = 0;
-        CHAR sz_digit[2] = "";
         for (int i = 6; i >= 0; i -= 3)
         {
             for (int j = 0; j < 3; j++)
             {
-                sz_digit[0] = digit + '0';
-                CreateWindowEx
+                HWND hButton = CreateWindowEx
                 (
-                    NULL, "Button", sz_digit,
-                    WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+                    NULL, "Button", "",
+                    WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_PUSHBUTTON,
                     g_i_BUTTON_START_X + (g_i_BUTTON_SIZE + g_i_INTERVAL) * j,
                     g_i_BUTTON_START_Y + (g_i_BUTTON_SIZE + g_i_INTERVAL) * i / 3,
                     g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
@@ -129,14 +131,26 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                     GetModuleHandle(NULL),
                     NULL
                 );
+                // Загрузка битмапа и установка на кнопку
+                HBITMAP hBitmap = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(digitBitmapIds[digit]), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+                if (hBitmap)
+                {
+                    SendMessage(hButton, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap);
+                }
+                else
+                {
+                    // Отладка: показываем ошибку, если битмап не загружен
+                    MessageBox(hwnd, "Failed to load digit bitmap", "Error", MB_OK | MB_ICONERROR);
+                }
                 digit++;
             }
         }
 
-        CreateWindowEx
+        // Кнопка "0" (двойной размер)
+        HWND hButton0 = CreateWindowEx
         (
-            NULL, "Button", "0",
-            WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+            NULL, "Button", "",
+            WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_PUSHBUTTON,
             g_i_BUTTON_START_X, BUTTON_SHIFT_Y(3),
             g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE,
             hwnd,
@@ -144,11 +158,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             GetModuleHandle(NULL),
             NULL
         );
+        HBITMAP hBitmap0 = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_IMAGE_0), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+        if (hBitmap0)
+        {
+            SendMessage(hButton0, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap0);
+        }
+        else
+        {
+            MessageBox(hwnd, "Failed to load 0 bitmap", "Error", MB_OK | MB_ICONERROR);
+        }
 
-        CreateWindowEx
+        // Кнопка "."
+        HWND hButtonPoint = CreateWindowEx
         (
-            NULL, "Button", ".",
-            WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+            NULL, "Button", "",
+            WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_PUSHBUTTON,
             BUTTON_SHIFT_X(2), BUTTON_SHIFT_Y(3),
             g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
             hwnd,
@@ -156,15 +180,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             GetModuleHandle(NULL),
             NULL
         );
+        HBITMAP hBitmapPoint = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_IMAGE_DOT), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+        if (hBitmapPoint)
+        {
+            SendMessage(hButtonPoint, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmapPoint);
+        }
+        else
+        {
+            MessageBox(hwnd, "Failed to load dot bitmap", "Error", MB_OK | MB_ICONERROR);
+        }
 
-        CHAR operation[2] = "";
+        // Кнопки операций (+, -, *, /)
+        const int operationBitmapIds[] = { IDI_IMAGE_PLUS, IDI_IMAGE_MINUS, IDI_IMAGE_MULTIPLY, IDI_IMAGE_SLASH };
         for (int i = 0; i < 4; i++)
         {
-            operation[0] = g_OPERATIONS[i];
-            CreateWindowEx
+            HWND hButtonOp = CreateWindowEx
             (
-                NULL, "Button", operation,
-                WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+                NULL, "Button", "",
+                WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_PUSHBUTTON,
                 BUTTON_SHIFT_X(3), BUTTON_SHIFT_Y(3 - i),
                 g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
                 hwnd,
@@ -172,12 +205,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 GetModuleHandle(NULL),
                 NULL
             );
+            HBITMAP hBitmapOp = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(operationBitmapIds[i]), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+            if (hBitmapOp)
+            {
+                SendMessage(hButtonOp, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmapOp);
+            }
+            else
+            {
+                char buffer[50];
+                sprintf(buffer, "Failed to load operation bitmap %d", i);
+                MessageBox(hwnd, buffer, "Error", MB_OK | MB_ICONERROR);
+            }
         }
 
-        CreateWindowEx
+        // Кнопка Backspace
+        HWND hButtonBsp = CreateWindowEx
         (
-            NULL, "Button", "<--",
-            WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+            NULL, "Button", "",
+            WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_PUSHBUTTON,
             BUTTON_SHIFT_X(4), BUTTON_SHIFT_Y(0),
             g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
             hwnd,
@@ -185,11 +230,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             GetModuleHandle(NULL),
             NULL
         );
+        HBITMAP hBitmapBsp = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_IMAGE_BACKSPACE), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+        if (hBitmapBsp)
+        {
+            SendMessage(hButtonBsp, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmapBsp);
+        }
+        else
+        {
+            MessageBox(hwnd, "Failed to load backspace bitmap", "Error", MB_OK | MB_ICONERROR);
+        }
 
-        CreateWindowEx
+        // Кнопка Clear
+        HWND hButtonClr = CreateWindowEx
         (
-            NULL, "Button", "C",
-            WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+            NULL, "Button", "",
+            WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_PUSHBUTTON,
             BUTTON_SHIFT_X(4), BUTTON_SHIFT_Y(1),
             g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
             hwnd,
@@ -197,11 +252,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             GetModuleHandle(NULL),
             NULL
         );
+        HBITMAP hBitmapClr = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_IMAGE_CLEAR), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+        if (hBitmapClr)
+        {
+            SendMessage(hButtonClr, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmapClr);
+        }
+        else
+        {
+            MessageBox(hwnd, "Failed to load clear bitmap", "Error", MB_OK | MB_ICONERROR);
+        }
 
-        CreateWindowEx
+        // Кнопка "="
+        HWND hButtonEqual = CreateWindowEx
         (
-            NULL, "Button", "=",
-            WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+            NULL, "Button", "",
+            WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_PUSHBUTTON,
             BUTTON_SHIFT_X(4), BUTTON_SHIFT_Y(2),
             g_i_BUTTON_SIZE, g_i_BUTTON_DOUBLE_SIZE,
             hwnd,
@@ -209,6 +274,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             GetModuleHandle(NULL),
             NULL
         );
+        HBITMAP hBitmapEqual = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_IMAGE_EQUAL), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+        if (hBitmapEqual)
+        {
+            SendMessage(hButtonEqual, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmapEqual);
+        }
+        else
+        {
+            MessageBox(hwnd, "Failed to load equal bitmap", "Error", MB_OK | MB_ICONERROR);
+        }
     }
     break;
 
@@ -263,7 +337,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 {
                 case IDC_BUTTON_PLUS: result += current_num; break;
                 case IDC_BUTTON_MINUS: result -= current_num; break;
-                case IDC_BUTTON_ASTER: result *= current_num; break;
+                case IDC_BUTTON_MULTIPLY: result *= current_num; break;
                 case IDC_BUTTON_SLASH:
                     if (current_num != 0)
                         result /= current_num;
@@ -281,7 +355,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             else if (wParam == VK_OEM_MINUS)
                 operation = IDC_BUTTON_MINUS;
             else if (wParam == VK_MULTIPLY)
-                operation = IDC_BUTTON_ASTER;
+                operation = IDC_BUTTON_MULTIPLY;
             else if (wParam == VK_DIVIDE)
                 operation = IDC_BUTTON_SLASH;
 
@@ -300,7 +374,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             {
             case IDC_BUTTON_PLUS: result += current_num; break;
             case IDC_BUTTON_MINUS: result -= current_num; break;
-            case IDC_BUTTON_ASTER: result *= current_num; break;
+            case IDC_BUTTON_MULTIPLY: result *= current_num; break;
             case IDC_BUTTON_SLASH:
                 if (current_num != 0)
                     result /= current_num;
@@ -336,7 +410,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             if (input_operation)
                 sz_display[0] = 0;
-            sz_digit[0] = LOWORD(wParam) - IDC_BUTTON_0 + 48;
+            sz_digit[0] = LOWORD(wParam) - IDC_BUTTON_0 + '0';
             if (strcmp(sz_display, "0"))
                 strcat(sz_display, sz_digit);
             else
@@ -378,12 +452,54 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             if (input)
             {
-                // Выполняем операцию с текущим числом
+                current_num = atof(sz_display); // Сохраняем текущее число как первый операнд
+                if (operation != 0) // Если уже была операция, выполняем ее
+                {
+                    switch (operation)
+                    {
+                    case IDC_BUTTON_PLUS: result += current_num; break;
+                    case IDC_BUTTON_MINUS: result -= current_num; break;
+                    case IDC_BUTTON_MULTIPLY: result *= current_num; break;
+                    case IDC_BUTTON_SLASH:
+                        if (current_num != 0) result /= current_num; break;
+                    }
+                }
+                else
+                {
+                    result = current_num; // Первый операнд
+                }
+            }
+            operation = LOWORD(wParam); // Сохраняем новую операцию
+            input = FALSE;
+            input_operation = TRUE;
+            SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)""); // Очищаем поле
+        }
+
+        // Обработка знака "="
+        if (LOWORD(wParam) == IDC_BUTTON_EQUAL)
+        {
+            if (input)
+            {
+                current_num = atof(sz_display); // Обновляем текущее число (второй операнд)
+            }
+            else if (operation == 0) // Если нет операции, показываем текущее значение
+            {
+                if (result == (int)result)
+                    sprintf(sz_display, "%d", (int)result);
+                else
+                    sprintf(sz_display, "%.6f", result);
+                SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)sz_display);
+                return TRUE;
+            }
+
+            // Выполняем операцию
+            if (operation != 0)
+            {
                 switch (operation)
                 {
                 case IDC_BUTTON_PLUS: result += current_num; break;
                 case IDC_BUTTON_MINUS: result -= current_num; break;
-                case IDC_BUTTON_ASTER: result *= current_num; break;
+                case IDC_BUTTON_MULTIPLY: result *= current_num; break;
                 case IDC_BUTTON_SLASH:
                     if (current_num != 0)
                         result /= current_num;
@@ -393,38 +509,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 }
             }
 
-            operation = LOWORD(wParam);  // Сохраняем операцию
-            current_num = atof(sz_display);  // Сохраняем текущее число
-            input = FALSE;
-            input_operation = TRUE;
-        }
-
-        if (LOWORD(wParam) == IDC_BUTTON_EQUAL)
-        {
-            if (input) b = atof(sz_display);
-
-            switch (operation)
+            // Обновляем отображение
+            if (strcmp(sz_display, "Error") != 0)
             {
-            case IDC_BUTTON_PLUS: result += current_num; break;
-            case IDC_BUTTON_MINUS: result -= current_num; break;
-            case IDC_BUTTON_ASTER: result *= current_num; break;
-            case IDC_BUTTON_SLASH:
-                if (current_num != 0)
-                    result /= current_num;
+                if (result == (int)result)
+                    sprintf(sz_display, "%d", (int)result);
                 else
-                    strcpy(sz_display, "Error");
-                break;
+                    sprintf(sz_display, "%.6f", result);
             }
 
-            input_operation = FALSE;
-            input = FALSE;
-
-            if (result == (int)result)
-                sprintf(sz_display, "%d", (int)result);
-            else
-                sprintf(sz_display, "%.6f", result);
-
             SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)sz_display);
+
+            // Сбрасываем состояние
+            input = FALSE;
+            input_operation = FALSE;
+            operation = 0;
         }
     }
     break;

@@ -29,4 +29,63 @@
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Calc1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="0.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="5.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="6.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="7.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="8.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="9.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="plus.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="minus.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="multiply.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="splash.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="clear.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="backspace.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="dot.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="equal.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
