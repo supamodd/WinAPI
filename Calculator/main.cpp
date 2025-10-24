@@ -87,12 +87,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR plCmdLine, IN
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    static double result = 0; // Текущее значение
-    static double current_num = 0; // Текущее вводимое число
-    static double b = DBL_MIN; // Переменная для второго числа
-    static int operation = 0; // Операция
-    static BOOL input = FALSE; // Ввод числа
-    static BOOL input_operation = FALSE; // Ввод операции
+    static double result = 0; 
+    static double current_num = 0; 
+    static double b = DBL_MIN; 
+    static int operation = 0;
+    static BOOL input = FALSE; 
+    static BOOL input_operation = FALSE; 
 
     switch (uMsg)
     {
@@ -110,7 +110,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             NULL
         );
 
-        // Массив идентификаторов ресурсов для цифр
         const int digitBitmapIds[] = { IDI_IMAGE_0, IDI_IMAGE_1, IDI_IMAGE_2, IDI_IMAGE_3, IDI_IMAGE_4,
                                        IDI_IMAGE_5, IDI_IMAGE_6, IDI_IMAGE_7, IDI_IMAGE_8, IDI_IMAGE_9 };
 
@@ -131,7 +130,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                     GetModuleHandle(NULL),
                     NULL
                 );
-                // Загрузка битмапа и установка на кнопку
                 HBITMAP hBitmap = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(digitBitmapIds[digit]), IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
                 if (hBitmap)
                 {
@@ -139,14 +137,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 }
                 else
                 {
-                    // Отладка: показываем ошибку, если битмап не загружен
                     MessageBox(hwnd, "Failed to load digit bitmap", "Error", MB_OK | MB_ICONERROR);
                 }
                 digit++;
             }
         }
 
-        // Кнопка "0" (двойной размер)
         HWND hButton0 = CreateWindowEx
         (
             NULL, "Button", "",
@@ -168,7 +164,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             MessageBox(hwnd, "Failed to load 0 bitmap", "Error", MB_OK | MB_ICONERROR);
         }
 
-        // Кнопка "."
         HWND hButtonPoint = CreateWindowEx
         (
             NULL, "Button", "",
@@ -190,7 +185,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             MessageBox(hwnd, "Failed to load dot bitmap", "Error", MB_OK | MB_ICONERROR);
         }
 
-        // Кнопки операций (+, -, *, /)
         const int operationBitmapIds[] = { IDI_IMAGE_PLUS, IDI_IMAGE_MINUS, IDI_IMAGE_MULTIPLY, IDI_IMAGE_SLASH };
         for (int i = 0; i < 4; i++)
         {
@@ -218,7 +212,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
         }
 
-        // Кнопка Backspace
         HWND hButtonBsp = CreateWindowEx
         (
             NULL, "Button", "",
@@ -240,7 +233,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             MessageBox(hwnd, "Failed to load backspace bitmap", "Error", MB_OK | MB_ICONERROR);
         }
 
-        // Кнопка Clear
         HWND hButtonClr = CreateWindowEx
         (
             NULL, "Button", "",
@@ -262,7 +254,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             MessageBox(hwnd, "Failed to load clear bitmap", "Error", MB_OK | MB_ICONERROR);
         }
 
-        // Кнопка "="
         HWND hButtonEqual = CreateWindowEx
         (
             NULL, "Button", "",
@@ -292,7 +283,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
         SendMessage(hEdit, WM_GETTEXT, sizeof(sz_display), (LPARAM)sz_display);
 
-        // Обработка цифр
         if (wParam >= '0' && wParam <= '9')
         {
             CHAR sz_digit[2] = { (CHAR)wParam, '\0' };
@@ -307,7 +297,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             input_operation = FALSE;
         }
 
-        // Обработка точки
         if (wParam == VK_OEM_PERIOD)
         {
             if (strchr(sz_display, '.') == NULL)
@@ -317,7 +306,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
         }
 
-        // Обработка Backspace
         if (wParam == VK_BACK)
         {
             if (strlen(sz_display) == 1)
@@ -327,12 +315,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)sz_display);
         }
 
-        // Обработка знаков операций (+, -, *, /)
         if (wParam == VK_OEM_PLUS || wParam == VK_OEM_MINUS || wParam == VK_MULTIPLY || wParam == VK_DIVIDE)
         {
             if (input)
             {
-                // Выполняем предыдущую операцию с результатом
                 switch (operation)
                 {
                 case IDC_BUTTON_PLUS: result += current_num; break;
@@ -346,10 +332,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                     break;
                 }
 
-                current_num = atof(sz_display); // Сохраняем текущее число
+                current_num = atof(sz_display); 
             }
 
-            // Запоминаем операцию
             if (wParam == VK_OEM_PLUS)
                 operation = IDC_BUTTON_PLUS;
             else if (wParam == VK_OEM_MINUS)
@@ -363,13 +348,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             input = FALSE;
         }
 
-        // Обработка знака "=" (клавиша Enter)
         if (wParam == VK_RETURN)
         {
             if (input)
-                current_num = atof(sz_display); // Сохраняем последнее число
+                current_num = atof(sz_display);
 
-            // Выполняем операцию с последним значением
             switch (operation)
             {
             case IDC_BUTTON_PLUS: result += current_num; break;
@@ -386,11 +369,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             input_operation = FALSE;
             input = FALSE;
 
-            // Округляем результат до 6 знаков после запятой
             if (result == (int)result)
-                sprintf(sz_display, "%d", (int)result);  // если целое число
+                sprintf(sz_display, "%d", (int)result); 
             else
-                sprintf(sz_display, "%.6f", result);  // иначе 6 знаков после запятой
+                sprintf(sz_display, "%.6f", result); 
 
             SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)sz_display);
         }
@@ -405,7 +387,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HWND hEdit = GetDlgItem(hwnd, IDC_EDIT);
         SendMessage(hEdit, WM_GETTEXT, SIZE, (LPARAM)sz_display);
 
-        // Обработка цифр
         if (LOWORD(wParam) >= IDC_BUTTON_0 && LOWORD(wParam) <= IDC_BUTTON_9)
         {
             if (input_operation)
@@ -420,14 +401,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             input_operation = FALSE;
         }
 
-        // Обработка точки
         if (LOWORD(wParam) == IDC_BUTTON_POINT && strchr(sz_display, '.') == NULL)
         {
             strcat(sz_display, ".");
             SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)sz_display);
         }
 
-        // Обработка Backspace
         if (LOWORD(wParam) == IDC_BUTTON_BSP)
         {
             if (strlen(sz_display) == 1)
@@ -437,7 +416,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)sz_display);
         }
 
-        // Обработка очистки
+        
         if (LOWORD(wParam) == IDC_BUTTON_CLR)
         {
             result = 0;
@@ -447,13 +426,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"0");
         }
 
-        // Обработка знаков операций
+        
         if (LOWORD(wParam) >= IDC_BUTTON_PLUS && LOWORD(wParam) <= IDC_BUTTON_SLASH)
         {
             if (input)
             {
-                current_num = atof(sz_display); // Сохраняем текущее число как первый операнд
-                if (operation != 0) // Если уже была операция, выполняем ее
+                current_num = atof(sz_display);
+                if (operation != 0)
                 {
                     switch (operation)
                     {
@@ -466,23 +445,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 }
                 else
                 {
-                    result = current_num; // Первый операнд
+                    result = current_num; 
                 }
             }
-            operation = LOWORD(wParam); // Сохраняем новую операцию
+            operation = LOWORD(wParam); 
             input = FALSE;
             input_operation = TRUE;
-            SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)""); // Очищаем поле
+            SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"");
         }
 
-        // Обработка знака "="
         if (LOWORD(wParam) == IDC_BUTTON_EQUAL)
         {
             if (input)
             {
-                current_num = atof(sz_display); // Обновляем текущее число (второй операнд)
+                current_num = atof(sz_display);
             }
-            else if (operation == 0) // Если нет операции, показываем текущее значение
+            else if (operation == 0)
             {
                 if (result == (int)result)
                     sprintf(sz_display, "%d", (int)result);
@@ -492,7 +470,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 return TRUE;
             }
 
-            // Выполняем операцию
             if (operation != 0)
             {
                 switch (operation)
@@ -509,7 +486,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 }
             }
 
-            // Обновляем отображение
             if (strcmp(sz_display, "Error") != 0)
             {
                 if (result == (int)result)
@@ -520,7 +496,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
             SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)sz_display);
 
-            // Сбрасываем состояние
             input = FALSE;
             input_operation = FALSE;
             operation = 0;
