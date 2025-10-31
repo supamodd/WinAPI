@@ -25,6 +25,12 @@
 #define IDC_BUTTON_CLR                  1016
 #define IDC_BUTTON_EQUAL                1017
 
+#define IDC_FONT_DIKOE					3
+#define IDC_FONT_STARF					4
+#define IDC_FONT_STEIGLITZ				5
+
+
+
 // Next default values for new objects
 //
 #ifdef APSTUDIO_INVOKED
