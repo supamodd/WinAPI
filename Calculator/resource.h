@@ -25,9 +25,9 @@
 #define IDC_BUTTON_CLR                  1016
 #define IDC_BUTTON_EQUAL                1017
 
-#define IDC_FONT_DIKOE					3
-#define IDC_FONT_STARF					4
-#define IDC_FONT_STEIGLITZ				5
+#define ID_FONT_DIKOE      301
+#define ID_FONT_STARF      302
+#define ID_FONT_STEIGLITZ  303
 
 
 

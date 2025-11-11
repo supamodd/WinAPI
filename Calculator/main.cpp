@@ -7,6 +7,7 @@
 #include <gdiplus.h>
 #include <Shlwapi.h> 
 #include "resource.h"
+#include "reason.h"
 
 #pragma comment(lib, "gdiplus.lib")
 #pragma comment(lib, "Shlwapi.lib") 
