@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 18
-VisualStudioVersion = 18.0.11201.2
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36623.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinAPI", "WinAPI\WinAPI.vcxproj", "{7F51811A-E9E7-4552-BB05-7C7A1E5D8993}"
 EndProject
@@ -25,6 +25,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "metal_mistral", "metal_mistral\metal_mistral.vcxproj", "{AB37CA99-08E1-465F-BE56-62D86AA957C2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fonts", "Fonts\Fonts.vcxproj", "{075F9DFE-8EC9-4E37-A4FC-CCF939AF42B3}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "CalculatorSetup", "CalculatorSetup\CalculatorSetup.vdproj", "{339BB482-79F0-2A56-9ED4-EE65F1577E89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -106,6 +108,12 @@ Global
 		{075F9DFE-8EC9-4E37-A4FC-CCF939AF42B3}.Release|x64.Build.0 = Release|x64
 		{075F9DFE-8EC9-4E37-A4FC-CCF939AF42B3}.Release|x86.ActiveCfg = Release|Win32
 		{075F9DFE-8EC9-4E37-A4FC-CCF939AF42B3}.Release|x86.Build.0 = Release|Win32
+		{339BB482-79F0-2A56-9ED4-EE65F1577E89}.Debug|x64.ActiveCfg = Debug
+		{339BB482-79F0-2A56-9ED4-EE65F1577E89}.Debug|x64.Build.0 = Debug
+		{339BB482-79F0-2A56-9ED4-EE65F1577E89}.Debug|x86.ActiveCfg = Debug
+		{339BB482-79F0-2A56-9ED4-EE65F1577E89}.Release|x64.ActiveCfg = Release
+		{339BB482-79F0-2A56-9ED4-EE65F1577E89}.Release|x64.Build.0 = Release
+		{339BB482-79F0-2A56-9ED4-EE65F1577E89}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
