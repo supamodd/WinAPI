@@ -464,7 +464,8 @@ VOID SetSkin(HWND hwnd, CONST CHAR SZ_SKIN[])
     strcat(szDllPath, ".dll");
 
     g_hCurrentSkin = LoadLibraryA(szDllPath);
-    if (!g_hCurrentSkin) {
+    if (!g_hCurrentSkin)
+    {
         CHAR msg[512];
         sprintf(msg, "Не удалось загрузить:\n%s", szDllPath);
         MessageBoxA(hwnd, msg, "Ошибка", MB_OK | MB_ICONERROR);
@@ -473,12 +474,14 @@ VOID SetSkin(HWND hwnd, CONST CHAR SZ_SKIN[])
 
     auto LoadBtn = [&](INT id, LPCSTR name, INT w, INT h) {
         HBITMAP hBmp = (HBITMAP)LoadImageA(g_hCurrentSkin, name, IMAGE_BITMAP, w, h, LR_CREATEDIBSECTION);
-        if (hBmp) {
+        if (hBmp) 
+        {
             SendMessage(GetDlgItem(hwnd, id), BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBmp);
         }
         };
 
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 10; ++i) 
+    {
         CHAR res[32];
         sprintf(res, "button_%d.bmp", i);
         LoadBtn(IDC_BUTTON_0 + i, res, i == 0 ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE, g_i_BUTTON_SIZE);
